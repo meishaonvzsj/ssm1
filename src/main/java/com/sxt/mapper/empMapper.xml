@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd"> 
+
+<mapper namespace="com.sxt.dao.EmpDao">
+   <insert id="insertEmp" parameterType="com.sxt.entity.Emp">
+     insert into emp values(emp_sequence.nextval,#{ename,jdbcType=VARCHAR},#{job,jdbcType=VARCHAR},#{mgr,jdbcType=INTEGER},#{hiredate,jdbcType=DATE},#{sal,jdbcType=INTEGER},#{comm,jdbcType=INTEGER},#{deptno,jdbcType=INTEGER})  
+   </insert>
+   
+   <select id="selectEmps" resultType="com.sxt.entity.Emp">
+     select * from emp   
+   </select>
+   
+   <delete id="deleteEmp" parameterType="java.lang.Integer" >
+   delete from emp e where e.empno=#{empNo}  
+   </delete>
+
+    <delete id="deleteEmps" parameterType="_int[]">
+      delete from emp e 
+      <where>
+        <choose>
+        <when test="array!=null and array.length>0">
+         <foreach collection="array" item="empNos" open="e.empno in(" close=")" separator=",">
+           #{empNos}
+         </foreach>
+        </when>        
+        <otherwise>
+          1=2
+        </otherwise>
+        </choose>    
+      </where>    
+    </delete>
+    
+    <!-- <select id="selectEmpsByCondition" resultType="com.sxt.entity.Emp" >
+     select * from emp e 
+     <where>
+      <if test="eName !=null and eName!=''">
+         and e.ename like '%${eName}%'
+      </if>
+      <if test="sal!=null and sal!=''">
+        and e.sal>=#{sal}
+      </if>
+     </where>
+   </select> -->
+   
+   <select id="selectEmpsByCondition1" resultType="com.sxt.entity.Emp" parameterType="com.sxt.entity.Condition">
+     select * from emp e 
+     <where>
+      <if test="eName !=null and eName!=''">
+         and e.ename like '%${eName}%'
+      </if>
+      <if test="sal!=null and sal!=''">
+        and e.sal>=#{sal}
+      </if>
+     </where>
+   </select>
+   
+   <update id="updateEmps" parameterType="com.sxt.entity.Emp">
+     update emp 
+    <set>
+    <if test="ename!=null and  ename!=''">
+      ename=#{ename}
+    </if>
+    <if test="job!=null and  job!=''">
+      job=#{job}
+    </if>
+    <if test="hiredate!=null and  hiredate!=''">
+      hiredate=#{hiredate}
+    </if>
+    <if test="sal!=null and  sal!=''">
+      sal=#{sal}
+    </if>
+    </set>
+   where empno=#{empno}
+   </update>
+   
+   <!-- 验证 -->
+   <select id="selectEmpByName" parameterType="java.lang.String" resultType="com.sxt.entity.Emp">
+     select * from emp where ename=#{eName}   
+   </select>
+   
+</mapper>
+
